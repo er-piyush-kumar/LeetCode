@@ -1,3 +1,5 @@
+// 1 Method - Bruteforce 
+
 class Solution {
 public:
 
@@ -40,3 +42,53 @@ public:
 
 //Time Complexity : O(2^n)
 //Space Complexity : O(n)
+
+
+
+
+
+//Second Method -> Optimied Method
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) 
+    {
+        int n = nums.size();
+
+        sort(begin(nums), end(nums));
+
+        vector<int> count(n, 1);  // To store the length of the largest divisible subset at each index
+        vector<int> prevIndex(n, -1);  // To track the previous index in the subset
+
+        int maxL = 1;  // Maximum length of the subset
+        int index = 0; // The index at which the largest subset ends
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] % nums[j] == 0) {  // If nums[i] is divisible by nums[j]
+                    if (count[i] < count[j] + 1) {  // If including nums[i] creates a longer subset
+                        count[i] = count[j] + 1;
+                        prevIndex[i] = j;
+                    }
+
+                    if (count[i] > maxL) {  // Update maxL and the index of the largest subset
+                        maxL = count[i];
+                        index = i;
+                    }
+                }
+            }
+        }
+
+        // Construct the largest divisible subset
+        vector<int> ans;
+        while (index != -1) {
+            ans.push_back(nums[index]);
+            index = prevIndex[index];
+        }
+
+        // The subset was constructed in reverse order, so reverse it
+        reverse(ans.begin(), ans.end());
+
+        return ans;
+    }
+};
+
